@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html ng-app="angularjs-starter">
+  <head>
+      <title>Runder Counter</title>
+
+      <link href="bootstrap-combined.min.css" rel="stylesheet" />
+
+      <style type="text/css">
+        html,body {
+          background-color: #3c3b49;
+          color: #fff;
+        }
+		.cntseparator{
+			color: white;
+		}
+		
+		.cntlabel {
+		color: #12eeb9; 
+		font-size: 60pt; 
+		font-face: 'Arial';
+		}
+		
+      </style>
+
+      <script src="angular.min.js"></script>
+      <script src="angular-round-progress-directive.js"></script>
+
+      <script>
+      var app = angular.module('angularjs-starter', ['angular.directives-round-progress']);
+	  var running = true;
+      app.controller('MainCtrl', function($scope,$timeout) {
+	   $scope.mode = 'counter';
+	   $scope.counter = 0;
+	   $scope.minutes = 0;
+	   $scope.hours = 0;
+	   
+		$scope.onTimeout = function(newValue, oldValue){
+			if($scope.counter == 59) {
+				if($scope.minutes < 59) $scope.minutes++; 
+				$scope.counter = 0; 
+				if($scope.minutes == 59) {
+					$scope.hours++; $scope.minutes = 0; 
+				}
+			}
+			
+			$scope.counter++;
+			mytimeout = $timeout($scope.onTimeout,1000);
+			mytimeoutp = $scope.counter / 60;
+			$scope.roundProgressData = {
+				label: $scope.counter,
+				percentage: mytimeoutp
+			}
+		}
+		
+		var mytimeout = $timeout($scope.onTimeout,1000);
+    
+		$scope.stop = function(){
+			if($scope.running) $timeout.cancel(mytimeout);
+		}
+        
+      });
+	 
+      </script>
+
+  </head>
+  <body ng-controller="MainCtrl">
+    <h1>Runder Counter vom Habsch!</h1>
+    
+
+    <div style="text-align: center;"><div ang:round:progress data-round-progress-model="roundProgressData"
+                            data-round-progress-width="500"
+                            data-round-progress-height="500"
+                            data-round-progress-outer-circle-width="40"
+                            data-round-progress-inner-circle-width="10"
+                            data-round-progress-outer-circle-radius="200"
+                            data-round-progress-inner-circle-radius="140"
+                            data-round-progress-label-font="100pt Arial"
+                            data-round-progress-outer-circle-background-color="#505769"
+                            data-round-progress-outer-circle-foreground-color="#12eeb9"
+                            data-round-progress-inner-circle-color="#505769"
+                            data-round-progress-label-color="#fff" ng-click="stop()"></div><br>
+							
+							<p class="cntlabel">{{hours}}<span class="cntseparator">h </span>{{minutes}}<span class="cntseparator">m </span>{{counter}}<span class="cntseparator">s</span></p>
+							
+</div>
+    
+  </body>
+</html>
